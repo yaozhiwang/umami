@@ -4,11 +4,13 @@ services:
   umami:
     image: ghcr.io/umami-software/umami:postgresql-latest
     ports:
-      - "3000:3000"
+      - "6000:3000"
     environment:
       DATABASE_URL: postgresql://umami:umami@db:5432/umami
       DATABASE_TYPE: postgresql
-      APP_SECRET: replace-me-with-a-random-string
+      APP_SECRET: ${APP_SECRET}
+      IGNORE_IP: ${IGNORE_IP}
+      IGNORE_HOSTNAME: ${IGNORE_HOSTNAME}
     depends_on:
       db:
         condition: service_healthy
@@ -34,3 +36,8 @@ services:
       retries: 5
 volumes:
   umami-db-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/data/umami/postgresql/data'
